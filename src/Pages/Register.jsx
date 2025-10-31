@@ -1,6 +1,8 @@
 import React, { use, useState } from 'react';
 import { Link, useNavigate } from 'react-router';
-import { AuthContext } from '../Provider/AuthProvider';
+import { AuthContext } from '../provider/AuthProvider';
+import toast from 'daisyui/components/toast';
+
 
 const Register = () => {
   const { createUser, setUser, updateUser } = use(AuthContext)
@@ -13,26 +15,28 @@ const Register = () => {
     const form = e.target;
     const email = form.email.value;
     const name = form.name.value;
+    
     if (name.length < 5) {
       setNameError("Name should be more then 5 character")
       return;
     } else {
       setNameError('')
     }
-    const photo = form.photo.value;
+    const photoURL = form.photo.value;
     const password = form.password.value;
     //console.log(email, password, photo, name)
     createUser(email, password)
       .then((result) => {
         const user = result.user;
-        updateUser({ displayName: name, photoUrl: photo })
-          .then(() => {
-            setUser({ ...user, displayName: name, photoUrl: photo });
-            navigate('/');
-        })
-          .catch((error) => {
-            console.log(error)
-          });
+       updateUser({ displayName: name, photoURL: photoURL })
+         .then(() => {
+             setUser({ ...user, displayName: name, photoURL: photoURL });
+           navigate("/");
+           toast('SignUp Successfully')
+         })
+         .catch((error) => {
+           console.log(error);
+         });
         //console.log(user)
       })
       .catch((error) => {
